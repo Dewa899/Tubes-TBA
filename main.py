@@ -1,40 +1,61 @@
-import lexical
-from parser_1 import Parser
+import tkinter as tk
+from parse_2 import Parser
+from lexical import lexical_analyzer
 
-# Formula input
-input_formula = "123 + 234 - 1.123 x -576"
+def process():
+    # Menghapus teks pada label
+    la_output.delete("1.0", tk.END)
+    parse_output.delete("1.0", tk.END)
 
-# Analisis leksikal
-output_tokens = lexical.lexical_analyzer(input_formula)
-print("Input: ", input_formula)
-print("Output (Lexical):", " ".join(str(token) for token in output_tokens))
+    # Mengambil teks dari input_string dan menghapus spasi di awal dan akhir
+    string = input_string.get("1.0", tk.END).strip()
 
-# Parsing
-parser = Parser(output_tokens)
-parser.parse()
+    # Melakukan analisis leksikal pada string input menggunakan lexical_analyzer
+    tokens = lexical_analyzer(string)
+    la_output.insert(tk.END, tokens) 
 
+    # Melakukan parsing menggunakan parser dengan tokens hasil analisis leksikal
+    parser = Parser(tokens)
+    if parser.parse():
+        parse_result = "Valid"
+    else:
+        parse_result = "Invalid"
+    #parse_result = Parser(tokens).parse
+    parse_output.insert(tk.END, parse_result)
 
-# Formula input
-input_formula = "7.5 : -2.14 ^ 178 |"
+# Membuat jendela utama menggunakan modul tkinter
+root = tk.Tk()
+root.title("TUBES TBA")
 
-# Analisis leksikal
-output_tokens = lexical.lexical_analyzer(input_formula)
-print("Input: ", input_formula)
-print("Output (Lexical):", " ".join(str(token) for token in output_tokens))
+# Mengatur ukuran jendela
+window_width = 600
+window_height = 300
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+x_position = (screen_width // 2) - (window_width // 2)
+y_position = (screen_height // 2) - (window_height // 2)
+root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
-# Parsing
-parser = Parser(output_tokens)
-parser.parse()
+# Membuat label dan entry untuk inputan
+input_label = tk.Label(root, text="Masukkan Formula:")
+input_label.grid(row=0, column=0, sticky=tk.W)
+input_string = tk.Text(root, height=5, width=60)
+input_string.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
 
+# Membuat tombol "Hitung"
+process_button = tk.Button(root, text="Process", command=process)
+process_button.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
 
-# Formula input
-input_formula = input_formula = "( -123 x 99.6 ^ 55.4 ) ]"
+# Membuat label untuk menampilkan hasil token lexical
+la_label = tk.Label(root, text="Hasil Lexical Analysis:")
+la_label.grid(row=2, column=0, padx=5, sticky=tk.W)
+la_output = tk.Text(root, height=5, width=60)
+la_output.grid(row=2, column=1, padx=5, sticky=tk.W)
 
-# Analisis leksikal
-output_tokens = lexical.lexical_analyzer(input_formula)
-print("Input: ", input_formula)
-print("Output (Lexical):", " ".join(str(token) for token in output_tokens))
+# Membuat label untuk menampilkan hasil parser
+parse_label = tk.Label(root, text="Hasil Parse:")
+parse_label.grid(row=3, column=0, padx=5, sticky=tk.W) 
+parse_output = tk.Text(root, height=5, width=60)
+parse_output.grid(row=3, column=1, padx=5, sticky=tk.W)
 
-# Parsing
-parser = Parser(output_tokens)
-parser.parse()
+root.mainloop()
