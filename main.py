@@ -1,5 +1,5 @@
 import tkinter as tk
-from parse_2 import Parser
+from parser_1 import Parser
 from lexical import lexical_analyzer
 
 def process():
